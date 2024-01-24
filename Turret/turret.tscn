@@ -1,0 +1,110 @@
+[gd_scene load_steps=11 format=3 uid="uid://cxefo45c6k5ak"]
+
+[ext_resource type="Script" path="res://Turret/turret.gd" id="1_dg5p3"]
+[ext_resource type="PackedScene" uid="uid://kua1whisicpm" path="res://Turret/projectile.tscn" id="1_qfgpr"]
+[ext_resource type="PackedScene" uid="uid://bubq3fkkfd3jh" path="res://Assets/Cannon.glb" id="3_h0ij2"]
+[ext_resource type="PackedScene" uid="uid://bnqgl2r6f2axm" path="res://Assets/TurretBase.glb" id="4_qbt6c"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_aqjs5"]
+height = 1.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_vemod"]
+top_radius = 0.6
+bottom_radius = 0.6
+height = 0.6
+
+[sub_resource type="BoxMesh" id="BoxMesh_ox21g"]
+size = Vector3(0.29, 0.825, 0.315)
+
+[sub_resource type="Animation" id="Animation_g1uk8"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("TurretBase/TurretTop:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0.3, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("TurretBase/Barrel:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0.3, 0.8)]
+}
+
+[sub_resource type="Animation" id="Animation_rpabu"]
+resource_name = "fire"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("TurretBase/TurretTop:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0.3, -0.5), Vector3(0, 0.3, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = false
+tracks/1/path = NodePath("TurretBase/Barrel:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0.3, 0.2), Vector3(0, 0.3, 0.6)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_7tnes"]
+_data = {
+"RESET": SubResource("Animation_g1uk8"),
+"fire": SubResource("Animation_rpabu")
+}
+
+[node name="Turret" type="Node3D"]
+script = ExtResource("1_dg5p3")
+projectile = ExtResource("1_qfgpr")
+
+[node name="TurretBase" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("CylinderMesh_aqjs5")
+
+[node name="TurretTop" type="MeshInstance3D" parent="TurretBase"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+mesh = SubResource("CylinderMesh_vemod")
+
+[node name="Cannon" parent="TurretBase/TurretTop" instance=ExtResource("3_h0ij2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+
+[node name="Barrel" type="MeshInstance3D" parent="TurretBase"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.3, 0.8)
+visible = false
+mesh = SubResource("BoxMesh_ox21g")
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_7tnes")
+}
+
+[node name="TurretBase2" parent="." instance=ExtResource("4_qbt6c")]
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

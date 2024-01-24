@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://bb4pjxw4bc2ru"]
+
+[ext_resource type="Script" path="res://Base/base.gd" id="1_b6iyk"]
+[ext_resource type="PackedScene" uid="uid://bgjqfelus0o0a" path="res://Assets/Base.glb" id="2_c7h24"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6oqyg"]
+albedo_color = Color(0.27451, 0.607843, 0.482353, 1)
+
+[node name="Base" type="Node3D" groups=["base"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 6)
+script = ExtResource("1_b6iyk")
+max_health = 50
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+visible = false
+radius = 2.0
+height = 4.0
+sides = 43
+material = SubResource("StandardMaterial3D_6oqyg")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.5, 0)
+billboard = 1
+text = "Starting Health"
+font_size = 500
+outline_size = 127
+
+[node name="Base" parent="." instance=ExtResource("2_c7h24")]
